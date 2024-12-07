@@ -1,5 +1,4 @@
 #include <stdio.h>
-
 #include <termios.h>
 #include <unistd.h>
 
@@ -22,28 +21,30 @@ int main(void) {
     char pass[20];
     char save_pass[20];
 
-    ch = getch();
+   
 
     int i = 0;
-    while (true)
+    while (i < 20)
     {
-    if (ch == 13)
-    {
-        pass[i] = '\0';
-        break;
-    } 
-    else
-    {
-        pass[i++] = ch;
-        printf("*");
-    }
+        ch = getch();
+        if (ch == 13)
+        {
+            pass[i] = '\0';
+            break;
+        } 
+        else
+        {
+            pass[i++] = ch;
+            printf("*");
+        }
     }
 
     printf("Your entered %s", pass);
 
-    FILE * ptr;
+   /* FILE * ptr;
     ptr = fopen("password.txt", "r");
-    scanf(ptr, "%s", save_pass)
+    scanf(ptr, "%s", save_pass);
+    */
     return 0;
 }
 
