@@ -6,6 +6,11 @@
 #include <time.h>
 
 // Function to replicate `getch` functionality
+/** 
+* getch() - writes keyboard input characters to buffer
+* Descritpion: Custom implementation of getch() from conio.h
+* Return: character ch.
+*/
 char getch() {
     struct termios oldt, newt;
     char ch;
@@ -18,7 +23,10 @@ char getch() {
     return ch;
 }
 
-
+/**
+ * main - entry point of the program
+ * Return: 0
+*/
 int main(void) {
     char ch;
     char pass[20];
@@ -27,30 +35,46 @@ int main(void) {
     int l;
 
     printf("Enter a password containing only alphanumeric characters!\n");
-    start:
-    while (i < 20)
+    // Loop to get character from keyboard input. Hides input by displaying asterisk character
+    while (1)
     {
-        ch = getch();
-        if (ch == '\n' || ch == '\r')
+        i = 0;
+        memset(pass, 0, sizeof(pass));
+
+        while (i < 19)
         {
-            pass[i] = '\0';
-            break;
-        } 
-        else if ((ch > 64 && ch < 91) || (ch > 96 && ch < 123) || (ch > 47 && ch < 58) )
-        {
-            pass[i++] = ch;
-            printf("*");
+            ch = getch();
+            if (ch == '\n' || ch == '\r')
+            {
+                pass[i] = '\0';
+                break;
+            } 
+            else if ((ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z') || (ch >= '0' && ch <= '9') )
+            {
+                pass[i++] = ch;
+                printf("*");
+            }
+            else
+            {
+                pass[i++] = ch;
+                printf("*");
+            }
+            /*else
+            {
+                printf("You have entered an invalid character.\n");
+                sleep(1);
+                printf("\033[H\033[J");
+                break;
+            }*/
         }
-        else
+
+        if (i > 0 && pass[i] == '\0')
         {
-            printf("You have entered an invalid character.\n");
-            sleep(2);
-            system("clear");
-            goto start;
+            break;
         }
     }
 
-    //printf("Your entered %s\n", pass);
+    // Retrieves password from file and saves it in saved_pass buffer
 
     FILE *ptr;
     ptr = fopen("password.txt", "r");
@@ -68,21 +92,22 @@ int main(void) {
         return EXIT_FAILURE;
     }
 
+    // Remove the new line character at the end of the file
     saved_pass[strcspn(saved_pass, "\n")] = '\0';
-
     fclose(ptr);
 
+    // Compares the input password and the saved password
     l = strcmp (pass, saved_pass);
     if (l == 0)
     {
-        printf("Login successful\n");
+        printf("\nLogin successful\n");
         return EXIT_SUCCESS;
     }
     else
     {
-        printf("Incorrect password\n");
+        printf("\nIncorrect password\n");
         sleep(1);
-        system("clear");
+        printf("\033[H\033[J");
     }
         
     return 0;
